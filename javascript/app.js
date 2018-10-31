@@ -43,5 +43,31 @@ $("#add-train-btn").on("click", function(event) {
 });
 
 //Firebase event: adds new trainInput to firebase database and adds for to html for the table
+database.ref().on("child_added", function(childSnap) {
 
+    //Firebase Variables
+    var trainName = childSnap.val().name;
+    var destination = childSnap.val().destination;
+    var firstTrainTime = childSnap.val().firstTrainTime;
+    var frequency = childSnap.val().frequency;
+
+    //Calculate nextArrival
+    var nextArrival = [];
+
+    //Calculate Minutes Awway
+    var minutesAway = [];
+
+    //Create new row on our table
+    var newRow = $("<tr>").append(
+        $("<td>").text(trainName),
+        $("<td>").text(destination),
+        $("<td>").text(frequency),
+        $("<td>").text(nextArrival),
+        $("<td>").text(minutesAway)
+    );
+
+    // Append the new row to the table
+    $("#train-table > tbody").append(newRow);
+
+})
 
