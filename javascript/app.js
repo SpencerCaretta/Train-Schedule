@@ -50,12 +50,24 @@ database.ref().on("child_added", function(childSnap) {
     var destination = childSnap.val().destination;
     var firstTrainTime = childSnap.val().firstTrainTime;
     var frequency = childSnap.val().frequency;
+    
+    //Make sure first time is before current time
+    var firstTrainTimeConverted = moment(firstTrainTime, "HH:mm").subtract(1, "years");
 
-    //Calculate nextArrival
-    var nextArrival = [];
+    //The Current Time
+    var currentTime = moment();
+
+    //Difference between the current time and the first time in minutes
+    var differenceInTime = moment().diff(moment(firstTrainTimeConverted), "minutes");
+
+    //Amount of minutes remaining
+    var remainingTime = differenceInTime % frequency;
 
     //Calculate Minutes Awway
-    var minutesAway = [];
+    var minutesAway = frequency - remainingTime;
+
+    //Calculate nextArrival
+    var nextArrival = moment().add(minutesAway, "minutes");
 
     //Create new row on our table
     var newRow = $("<tr>").append(
@@ -66,7 +78,7 @@ database.ref().on("child_added", function(childSnap) {
         $("<td>").text(minutesAway)
     );
 
-    // Append the new row to the table
+    // Append the input of the user to the table
     $("#train-table > tbody").append(newRow);
 
 })
